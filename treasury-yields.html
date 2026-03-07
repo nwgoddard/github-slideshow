@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-Year Treasury Yield Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: #1e2332;
+      border: 1px solid #2d3348;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .current-yield-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .yield-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .yield-value {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #f8fafc;
+      line-height: 1;
+    }
+
+    .yield-unit {
+      font-size: 1.5rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .yield-change {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .yield-change.up   { background: #14532d22; color: #4ade80; border: 1px solid #16a34a44; }
+    .yield-change.down { background: #7f1d1d22; color: #f87171; border: 1px solid #dc262644; }
+    .yield-change.flat { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #2d3348;
+    }
+
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-item .meta-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; }
+    .meta-item .meta-val   { font-size: 0.95rem; color: #cbd5e1; font-weight: 500; }
+
+    .chart-card { }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chart-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 320px;
+    }
+
+    .refresh-btn {
+      background: #3b4fd8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .refresh-btn:hover { background: #4f63e8; }
+    .refresh-btn:disabled { background: #2d3348; color: #64748b; cursor: not-allowed; }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 12px;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+    }
+
+    .dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
+    .dot.error   { background: #ef4444; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #2d3348 25%, #3a4060 50%, #2d3348 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-text { height: 1em; width: 140px; display: inline-block; }
+    .skeleton-large { height: 3.5rem; width: 160px; display: inline-block; }
+
+    .error-box {
+      background: #7f1d1d22;
+      border: 1px solid #dc262644;
+      border-radius: 8px;
+      padding: 16px;
+      color: #fca5a5;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .data-source {
+      font-size: 0.75rem;
+      color: #475569;
+      text-align: right;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>10-Year Treasury Yield</h1>
+    <p>U.S. Department of the Treasury — Daily Yield Curve Rates</p>
+  </header>
+
+  <!-- Current yield card -->
+  <div class="card">
+    <div class="yield-label">Current Yield (10-Year)</div>
+    <div class="current-yield-row">
+      <div>
+        <span class="yield-value" id="currentYield">
+          <span class="skeleton skeleton-large">&nbsp;</span>
+        </span>
+        <span class="yield-unit">%</span>
+      </div>
+      <div class="yield-change flat" id="yieldChange" style="display:none"></div>
+    </div>
+
+    <div class="meta-row" id="metaRow">
+      <div class="meta-item">
+        <span class="meta-label">As of</span>
+        <span class="meta-val" id="asOfDate"><span class="skeleton skeleton-text">&nbsp;</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">20-Day High</span>
+        <span class="meta-val" id="high20"><span class="skeleton skeleton-text">&nbsp;</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">20-Day Low</span>
+        <span class="meta-val" id="low20"><span class="skeleton skeleton-text">&nbsp;</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">20-Day Avg</span>
+        <span class="meta-val" id="avg20"><span class="skeleton skeleton-text">&nbsp;</span></span>
+      </div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- Chart card -->
+  <div class="card chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Last 20 Trading Days</div>
+        <div class="chart-subtitle">Daily closing yield (%)</div>
+      </div>
+      <button class="refresh-btn" id="refreshBtn" onclick="loadData()">Refresh</button>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="yieldChart"></canvas>
+    </div>
+    <div class="status-bar">
+      <div class="dot loading" id="statusDot"></div>
+      <span id="statusText">Loading data from Treasury.gov…</span>
+    </div>
+    <div class="data-source">Data source: U.S. Department of the Treasury — treasury.gov</div>
+  </div>
+</div>
+
+<script>
+let chart = null;
+
+// Parse Treasury.gov XML response and extract 10-yr yield entries
+function parseXML(xmlText) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlText, 'application/xml');
+  const entries = doc.querySelectorAll('entry');
+  const results = [];
+
+  entries.forEach(entry => {
+    // Date field
+    const dateEl = entry.querySelector('NEW_DATE') || entry.querySelector('d\\:NEW_DATE');
+    // 10-year yield field
+    const bc10El = entry.querySelector('BC_10YEAR') || entry.querySelector('d\\:BC_10YEAR');
+
+    if (!dateEl || !bc10El) return;
+
+    const rawDate = dateEl.textContent.trim();
+    const rawYield = bc10El.textContent.trim();
+
+    if (!rawDate || !rawYield || rawYield === '') return;
+
+    const yieldVal = parseFloat(rawYield);
+    if (isNaN(yieldVal)) return;
+
+    // Parse date (format: 2025-03-05T00:00:00)
+    const dateObj = new Date(rawDate);
+    if (isNaN(dateObj.getTime())) return;
+
+    results.push({ date: dateObj, yield: yieldVal });
+  });
+
+  // Sort ascending by date
+  results.sort((a, b) => a.date - b.date);
+  return results;
+}
+
+// Fetch one month worth of data from Treasury.gov
+async function fetchMonth(year, month) {
+  const ym = `${year}${String(month).padStart(2, '0')}`;
+  const url = `https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value_month=${ym}`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const text = await resp.text();
+  return parseXML(text);
+}
+
+// Collect enough trading days to get 20 points, going back across month boundaries
+async function fetchLast20TradingDays() {
+  const today = new Date();
+  let year  = today.getFullYear();
+  let month = today.getMonth() + 1; // 1-indexed
+
+  let allData = [];
+
+  // Fetch up to 3 months to ensure we have 20 trading days
+  for (let i = 0; i < 3; i++) {
+    const data = await fetchMonth(year, month);
+    allData = data.concat(allData);
+
+    if (allData.length >= 20) break;
+
+    // Go back one month
+    month--;
+    if (month < 1) { month = 12; year--; }
+  }
+
+  // Keep only trading days up to and including today, latest 20
+  const todayMs = today.getTime();
+  const filtered = allData.filter(d => d.date.getTime() <= todayMs);
+  return filtered.slice(-20);
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function setStatus(state, msg) {
+  const dot  = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  dot.className = `dot ${state}`;
+  text.textContent = msg;
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+  setStatus('error', 'Failed to load data');
+}
+
+function renderChart(labels, values) {
+  const ctx = document.getElementById('yieldChart').getContext('2d');
+
+  // Gradient fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+  gradient.addColorStop(0, 'rgba(99,102,241,0.35)');
+  gradient.addColorStop(1, 'rgba(99,102,241,0.00)');
+
+  const data = {
+    labels,
+    datasets: [{
+      label: '10-Year Yield (%)',
+      data: values,
+      borderColor: '#818cf8',
+      backgroundColor: gradient,
+      borderWidth: 2.5,
+      pointRadius: 4,
+      pointBackgroundColor: '#818cf8',
+      pointBorderColor: '#1e2332',
+      pointBorderWidth: 2,
+      pointHoverRadius: 6,
+      tension: 0.35,
+      fill: true,
+    }]
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a2035',
+        borderColor: '#3b4fd8',
+        borderWidth: 1,
+        titleColor: '#94a3b8',
+        bodyColor: '#f1f5f9',
+        padding: 10,
+        callbacks: {
+          label: ctx => ` ${ctx.parsed.y.toFixed(2)}%`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#2d3348' },
+        ticks: { color: '#64748b', font: { size: 11 }, maxRotation: 45 }
+      },
+      y: {
+        grid: { color: '#2d3348' },
+        ticks: {
+          color: '#64748b',
+          font: { size: 11 },
+          callback: v => v.toFixed(2) + '%'
+        },
+        // small padding so line isn't touching edges
+        grace: '5%'
+      }
+    }
+  };
+
+  if (chart) {
+    chart.data    = data;
+    chart.options = options;
+    chart.update();
+  } else {
+    chart = new Chart(ctx, { type: 'line', data, options });
+  }
+}
+
+async function loadData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  document.getElementById('errorBox').style.display = 'none';
+  setStatus('loading', 'Loading data from Treasury.gov…');
+
+  // Reset skeleton state
+  document.getElementById('currentYield').innerHTML = '<span class="skeleton skeleton-large">&nbsp;</span>';
+  document.getElementById('asOfDate').innerHTML     = '<span class="skeleton skeleton-text">&nbsp;</span>';
+  document.getElementById('high20').innerHTML       = '<span class="skeleton skeleton-text">&nbsp;</span>';
+  document.getElementById('low20').innerHTML        = '<span class="skeleton skeleton-text">&nbsp;</span>';
+  document.getElementById('avg20').innerHTML        = '<span class="skeleton skeleton-text">&nbsp;</span>';
+  document.getElementById('yieldChange').style.display = 'none';
+
+  try {
+    const data = await fetchLast20TradingDays();
+
+    if (data.length === 0) {
+      showError('No yield data returned. Treasury.gov may be unavailable or the API format has changed.');
+      btn.disabled = false;
+      return;
+    }
+
+    const latest   = data[data.length - 1];
+    const previous = data.length > 1 ? data[data.length - 2] : null;
+
+    const yields = data.map(d => d.yield);
+    const high   = Math.max(...yields);
+    const low    = Math.min(...yields);
+    const avg    = yields.reduce((s, v) => s + v, 0) / yields.length;
+
+    // Update current yield
+    document.getElementById('currentYield').textContent = latest.yield.toFixed(2);
+    document.getElementById('asOfDate').textContent     = latest.date.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    document.getElementById('high20').textContent       = high.toFixed(2) + '%';
+    document.getElementById('low20').textContent        = low.toFixed(2) + '%';
+    document.getElementById('avg20').textContent        = avg.toFixed(2) + '%';
+
+    // Change badge
+    if (previous) {
+      const diff = latest.yield - previous.yield;
+      const sign = diff > 0 ? '+' : '';
+      const changeEl = document.getElementById('yieldChange');
+      changeEl.textContent = `${sign}${diff.toFixed(2)} bps`;
+      changeEl.className = `yield-change ${diff > 0.005 ? 'up' : diff < -0.005 ? 'down' : 'flat'}`;
+      changeEl.style.display = '';
+    }
+
+    // Render chart
+    const labels = data.map(d => formatDate(d.date));
+    const values = data.map(d => d.yield);
+    renderChart(labels, values);
+
+    const count = data.length;
+    setStatus('', `Data loaded — ${count} trading day${count !== 1 ? 's' : ''} shown. Last updated: ${new Date().toLocaleTimeString()}`);
+    document.getElementById('statusDot').style.background = '#22c55e';
+    document.getElementById('statusDot').style.animation  = 'none';
+
+  } catch (err) {
+    showError(`Could not fetch treasury data: ${err.message}. Check your internet connection and try again.`);
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Load on page open
+loadData();
+</script>
+</body>
+</html>
