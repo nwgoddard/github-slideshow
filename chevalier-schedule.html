@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chevalier Basketball Schedule 2026</title>
+  <style>
+    :root {
+      --red: #ce1141;
+      --black: #000000;
+      --gold: #c49a22;
+      --white: #ffffff;
+      --gray: #1a1a1a;
+      --light-gray: #2a2a2a;
+      --muted: #888;
+      --highlight: #c49a22;
+      --highlight-bg: rgba(196, 154, 34, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a0000 0%, #3d0000 50%, #1a0000 100%);
+      border-bottom: 3px solid var(--red);
+      padding: 32px 20px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(206,17,65,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .team-logo {
+      font-size: 64px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 12px rgba(206,17,65,0.8));
+    }
+    header h1 {
+      font-size: clamp(28px, 6vw, 52px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, var(--white), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    /* ── Next Game Banner ── */
+    #next-game-banner {
+      margin: 28px auto;
+      max-width: 680px;
+      padding: 0 16px;
+    }
+    .next-game-card {
+      background: linear-gradient(135deg, rgba(196,154,34,0.2), rgba(206,17,65,0.2));
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 20px 28px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(196,154,34,0.3);
+      animation: pulse-glow 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(196,154,34,0.3); }
+      50%       { box-shadow: 0 0 40px rgba(196,154,34,0.6); }
+    }
+    .next-game-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .next-game-matchup {
+      font-size: clamp(22px, 5vw, 36px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .next-game-matchup .vs { color: var(--muted); font-size: 0.55em; margin: 0 12px; }
+    .next-game-details {
+      margin-top: 8px;
+      font-size: 15px;
+      color: #ccc;
+    }
+    .countdown {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* ── Schedule Table ── */
+    .schedule-wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .section-title {
+      font-size: 12px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    thead tr {
+      background: var(--red);
+    }
+    thead th {
+      padding: 12px 16px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: left;
+      font-weight: 700;
+    }
+    tbody tr {
+      border-bottom: 1px solid #222;
+      transition: background 0.2s;
+    }
+    tbody tr:hover { background: #1c1c1c; }
+    tbody tr.past { opacity: 0.42; }
+    tbody tr.no-game { background: #0d0d0d; }
+    tbody tr.next-up {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--gold);
+      border-bottom: 1px solid rgba(196,154,34,0.3);
+    }
+    tbody tr.next-up td { color: var(--white); }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .date-cell { white-space: nowrap; }
+    .date-day { font-weight: 700; font-size: 15px; }
+    .date-month { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+    .time-badge {
+      display: inline-block;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    tr.next-up .time-badge { background: rgba(196,154,34,0.2); border-color: var(--gold); }
+
+    .opponent { font-weight: 700; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .home-indicator {
+      display: inline-block;
+      font-size: 10px;
+      background: var(--red);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-left: 8px;
+      letter-spacing: 1px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .status-next   { background: var(--gold); color: #000; }
+    .status-past   { background: #2a2a2a; color: var(--muted); }
+    .status-future { background: #1a1a1a; color: #666; border: 1px solid #333; }
+    .status-noplay { background: #111; color: #555; border: 1px solid #222; }
+
+    .no-game-text { font-style: italic; color: var(--muted); font-size: 13px; }
+    .playoff-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--red), #8b0000);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Star icon for next game ── */
+    .star-icon { color: var(--gold); margin-right: 6px; font-size: 16px; }
+
+    /* ── MJ Quote ── */
+    .mj-section {
+      max-width: 820px;
+      margin: 48px auto 0;
+      padding: 0 16px;
+    }
+    .mj-card {
+      background: linear-gradient(135deg, #0d0d0d, #1a0000);
+      border: 1px solid #2a0000;
+      border-top: 3px solid var(--red);
+      border-radius: 16px;
+      padding: 32px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mj-card::before {
+      content: '"';
+      position: absolute;
+      top: -20px; left: 20px;
+      font-size: 180px;
+      color: rgba(206,17,65,0.08);
+      font-family: Georgia, serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .mj-avatar { font-size: 48px; margin-bottom: 12px; }
+    .mj-quote {
+      font-size: clamp(16px, 3vw, 20px);
+      font-style: italic;
+      line-height: 1.65;
+      color: #e0e0e0;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .mj-attribution {
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── Download Button ── */
+    .actions {
+      max-width: 820px;
+      margin: 28px auto 0;
+      padding: 0 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-primary { background: var(--red); color: var(--white); }
+    .btn-secondary { background: #1e1e1e; color: var(--white); border: 1px solid #333; }
+
+    /* ── Legend ── */
+    .legend {
+      max-width: 820px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+    }
+
+    @media (max-width: 540px) {
+      th:nth-child(3), td:nth-child(3) { display: none; }
+      td { padding: 10px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="team-logo">🏀</div>
+  <h1>Chevalier</h1>
+  <div class="subtitle">2026 Basketball Season Schedule</div>
+</header>
+
+<!-- Next Game Banner -->
+<div id="next-game-banner"></div>
+
+<div class="actions">
+  <button class="btn btn-primary" onclick="downloadPage()">⬇ Download Schedule</button>
+  <button class="btn btn-secondary" onclick="copyLink()">🔗 Copy Share Link</button>
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--gold);"></div> Next game
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#2a2a2a;"></div> Past game
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#1a1a1a; border:1px solid #333;"></div> Upcoming
+  </div>
+</div>
+
+<div class="schedule-wrapper" style="margin-top:28px;">
+  <div class="section-title">Regular Season</div>
+  <table id="schedule-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Opponent</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="schedule-body"></tbody>
+  </table>
+</div>
+
+<!-- MJ Quote -->
+<div class="mj-section">
+  <div class="mj-card">
+    <div class="mj-avatar">🐐</div>
+    <div class="mj-quote">
+      "I've missed more than 9,000 shots in my career. I've lost almost 300 games. Twenty-six times I've been trusted to take the game-winning shot and missed. I've failed over and over and over again in my life — and that is why I succeed."
+      <br><br>
+      <em style="font-size:0.85em; color:#aaa;">…Also, I once scored 63 points on the Celtics in the playoffs and Larry Bird called me 'God disguised as Michael Jordan.' Your move, other teams. 😤</em>
+    </div>
+    <div class="mj-attribution">— Michael Jordan, #23 · 6× NBA Champion · The GOAT</div>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────────
+  // Schedule data — Chevalier team games only
+  // ─────────────────────────────────────────────────
+  const schedule = [
+    { date: '2026-01-05', time: '9:00 AM',  opponent: 'Bradley',   type: 'game' },
+    { date: '2026-01-12', time: '6:15 AM',  opponent: 'Francis',   type: 'game' },
+    { date: '2026-01-19', time: null,        opponent: null,        type: 'noplay', note: 'No School — MLK Day' },
+    { date: '2026-01-26', time: null,        opponent: null,        type: 'noplay', note: 'No Games — Snow Day' },
+    { date: '2026-02-02', time: '7:10 AM',  opponent: 'Mazyck',    type: 'game' },
+    { date: '2026-02-09', time: '7:10 AM',  opponent: 'Rhyss',     type: 'game' },
+    { date: '2026-02-16', time: null,        opponent: null,        type: 'noplay', note: 'No School — Feb Vacation' },
+    { date: '2026-02-23', time: null,        opponent: null,        type: 'noplay', note: 'No Games — Snow Day' },
+    { date: '2026-03-02', time: '8:05 AM',  opponent: 'Bradley',   type: 'game' },
+    { date: '2026-03-09', time: '9:00 AM',  opponent: 'Francis',   type: 'game' },
+    { date: '2026-03-16', time: '8:05 AM',  opponent: 'Hackett',   type: 'game' },
+    { date: '2026-03-23', time: '9:00 AM',  opponent: 'Ricciardi', type: 'game' },
+    { date: '2026-03-30', time: '6:15 AM',  opponent: 'Withers',   type: 'game' },
+    { date: '2026-04-06', time: '8:05 AM',  opponent: 'Mazyck',    type: 'game' },
+    { date: '2026-04-13', time: null,        opponent: null,        type: 'playoff', note: '🏆 Playoffs — Placement Round' },
+    { date: '2026-04-20', time: null,        opponent: null,        type: 'playoff', note: '🏆 Championship / Final Placement' },
+    { date: '2026-04-27', time: null,        opponent: null,        type: 'noplay', note: 'No Games — April Vacation' },
+  ];
+
+  // ─────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────
+  function parseLocalDate(str) {
+    const [y, m, d] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function formatDate(str) {
+    const d = parseLocalDate(str);
+    const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return {
+      day:   d.getDate(),
+      dow:   days[d.getDay()],
+      month: months[d.getMonth()],
+      year:  d.getFullYear(),
+    };
+  }
+
+  function gameDateTime(row) {
+    if (!row.time) return parseLocalDate(row.date);
+    const d   = parseLocalDate(row.date);
+    const [hm, ampm] = row.time.split(' ');
+    let [h, m] = hm.split(':').map(Number);
+    if (ampm === 'PM' && h !== 12) h += 12;
+    if (ampm === 'AM' && h === 12) h = 0;
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
+  }
+
+  function countdown(targetDate) {
+    const now  = new Date();
+    const diff = targetDate - now;
+    if (diff <= 0) return 'Game time!';
+    const days = Math.floor(diff / 86400000);
+    const hrs  = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000)  / 60000);
+    if (days > 0) return `${days}d ${hrs}h until tip-off`;
+    if (hrs  > 0) return `${hrs}h ${mins}m until tip-off`;
+    return `${mins} minutes until tip-off!`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // Find next game (game type only, in the future)
+  // ─────────────────────────────────────────────────
+  const now = new Date();
+
+  function isGameOver(row) {
+    const gt = gameDateTime(row);
+    // consider a game "over" 2 hours after tip-off
+    return now > new Date(gt.getTime() + 2 * 3600000);
+  }
+
+  const nextGameRow = schedule.find(r => r.type === 'game' && !isGameOver(r));
+
+  // ─────────────────────────────────────────────────
+  // Render Next-Game Banner
+  // ─────────────────────────────────────────────────
+  const banner = document.getElementById('next-game-banner');
+  if (nextGameRow) {
+    const f  = formatDate(nextGameRow.date);
+    const gt = gameDateTime(nextGameRow);
+    banner.innerHTML = `
+      <div class="next-game-card">
+        <div class="next-game-label">⭐ Next Game</div>
+        <div class="next-game-matchup">
+          Chevalier <span class="vs">VS</span> ${nextGameRow.opponent}
+        </div>
+        <div class="next-game-details">${f.dow}, ${f.month} ${f.day}, ${f.year} &nbsp;·&nbsp; ${nextGameRow.time}</div>
+        <div class="countdown" id="countdown-timer">${countdown(gt)}</div>
+      </div>`;
+
+    // Live countdown
+    setInterval(() => {
+      const el = document.getElementById('countdown-timer');
+      if (el) el.textContent = countdown(gt);
+    }, 30000);
+  } else {
+    banner.innerHTML = `
+      <div class="next-game-card">
+        <div class="next-game-label">Season Status</div>
+        <div class="next-game-matchup">Season Complete!</div>
+        <div class="next-game-details">Great season, Chevalier! 🏆</div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // Render Table
+  // ─────────────────────────────────────────────────
+  const tbody = document.getElementById('schedule-body');
+
+  schedule.forEach(row => {
+    const tr  = document.createElement('tr');
+    const f   = formatDate(row.date);
+    const isNext = nextGameRow && row.date === nextGameRow.date && row.type === 'game';
+    const past   = row.type === 'game' && isGameOver(row);
+
+    if (isNext)           tr.classList.add('next-up');
+    else if (past)        tr.classList.add('past');
+    else if (row.type === 'noplay') tr.classList.add('no-game');
+
+    if (row.type === 'game') {
+      let statusHtml;
+      if (isNext)    statusHtml = `<span class="status-badge status-next">⭐ Next Up</span>`;
+      else if (past) statusHtml = `<span class="status-badge status-past">Done</span>`;
+      else           statusHtml = `<span class="status-badge status-future">Upcoming</span>`;
+
+      tr.innerHTML = `
+        <td class="date-cell">
+          <div class="date-day">${isNext ? '<span class="star-icon">★</span>' : ''}${f.dow} ${f.day}</div>
+          <div class="date-month">${f.month} ${f.year}</div>
+        </td>
+        <td><span class="time-badge">${row.time}</span></td>
+        <td><span class="opponent">${row.opponent}</span></td>
+        <td>${statusHtml}</td>`;
+    } else if (row.type === 'playoff') {
+      tr.innerHTML = `
+        <td class="date-cell">
+          <div class="date-day">${f.dow} ${f.day}</div>
+          <div class="date-month">${f.month} ${f.year}</div>
+        </td>
+        <td>—</td>
+        <td colspan="2"><span class="playoff-badge">${row.note}</span></td>`;
+    } else {
+      tr.innerHTML = `
+        <td class="date-cell">
+          <div class="date-day">${f.dow} ${f.day}</div>
+          <div class="date-month">${f.month} ${f.year}</div>
+        </td>
+        <td>—</td>
+        <td colspan="2"><span class="no-game-text">${row.note}</span></td>`;
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  // ─────────────────────────────────────────────────
+  // Actions
+  // ─────────────────────────────────────────────────
+  function downloadPage() {
+    const html  = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+    const blob  = new Blob([html], { type: 'text/html' });
+    const a     = document.createElement('a');
+    a.href      = URL.createObjectURL(blob);
+    a.download  = 'chevalier-schedule-2026.html';
+    a.click();
+  }
+
+  function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector('.btn-secondary');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    }).catch(() => {
+      prompt('Copy this link:', url);
+    });
+  }
+</script>
+
+</body>
+</html>
