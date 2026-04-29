@@ -1,0 +1,12 @@
+{
+  "last_updated": "2026-01-15T00:00:00Z",
+  "data_source": "RealtyRates.com",
+  "data_source_url": "https://www.realtyrates.com",
+  "is_stub": true,
+  "note": "Stub data — run scripts/fetch_realtyrates.py to populate with live data",
+  "surveys": {
+    "commercial_rates": { "status": "stub", "url": "https://www.realtyrates.com/commercial-mortgage-rates.html" },
+    "indices": { "status": "stub", "url": "https://www.realtyrates.com/indices.html" },
+    "developer_survey": { "status": "stub", "url": "https://www.realtyrates.com/ds-property-types.html" }
+  }
+}

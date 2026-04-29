@@ -1,0 +1,166 @@
+{
+  "fetched_at": "2026-01-15T00:00:00Z",
+  "quarter": "Q4 2025",
+  "source": "RealtyRates.com Developer Survey",
+  "is_stub": true,
+  "categories": [
+    {
+      "name": "Subdivisions & PUDs",
+      "description": "Residential land subdivisions and Planned Unit Developments",
+      "metrics": [
+        {
+          "name": "Land Acquisition Loan Rate",
+          "low": 7.50,
+          "high": 9.50,
+          "avg": 8.50,
+          "unit": "%"
+        },
+        {
+          "name": "Construction/Development Loan Rate",
+          "low": 7.75,
+          "high": 9.75,
+          "avg": 8.75,
+          "unit": "%"
+        },
+        {
+          "name": "Max LTV - Land",
+          "low": 50.0,
+          "high": 65.0,
+          "avg": 57.5,
+          "unit": "%"
+        },
+        {
+          "name": "Max LTV - Construction",
+          "low": 60.0,
+          "high": 75.0,
+          "avg": 67.5,
+          "unit": "%"
+        },
+        {
+          "name": "Absorption Rate",
+          "low": 6.0,
+          "high": 18.0,
+          "avg": 12.0,
+          "unit": "lots/month"
+        },
+        {
+          "name": "Equity Requirement",
+          "low": 25.0,
+          "high": 40.0,
+          "avg": 32.5,
+          "unit": "%"
+        },
+        {
+          "name": "Origination Fee",
+          "low": 1.0,
+          "high": 2.5,
+          "avg": 1.75,
+          "unit": "points"
+        }
+      ]
+    },
+    {
+      "name": "Condominiums",
+      "description": "Condominium development projects",
+      "metrics": [
+        {
+          "name": "Land Acquisition Loan Rate",
+          "low": 7.25,
+          "high": 9.25,
+          "avg": 8.25,
+          "unit": "%"
+        },
+        {
+          "name": "Construction Loan Rate",
+          "low": 7.50,
+          "high": 9.50,
+          "avg": 8.50,
+          "unit": "%"
+        },
+        {
+          "name": "Max LTV - Land",
+          "low": 55.0,
+          "high": 70.0,
+          "avg": 62.5,
+          "unit": "%"
+        },
+        {
+          "name": "Max LTV - Construction",
+          "low": 65.0,
+          "high": 75.0,
+          "avg": 70.0,
+          "unit": "%"
+        },
+        {
+          "name": "Pre-Sale Requirement",
+          "low": 20.0,
+          "high": 40.0,
+          "avg": 30.0,
+          "unit": "% of units"
+        },
+        {
+          "name": "Equity Requirement",
+          "low": 20.0,
+          "high": 35.0,
+          "avg": 27.5,
+          "unit": "%"
+        },
+        {
+          "name": "Origination Fee",
+          "low": 1.0,
+          "high": 2.0,
+          "avg": 1.5,
+          "unit": "points"
+        }
+      ]
+    },
+    {
+      "name": "Business/Industrial Parks",
+      "description": "Commercial business and industrial park development",
+      "metrics": [
+        {
+          "name": "Land Acquisition Loan Rate",
+          "low": 7.25,
+          "high": 9.00,
+          "avg": 8.125,
+          "unit": "%"
+        },
+        {
+          "name": "Construction Loan Rate",
+          "low": 7.50,
+          "high": 9.25,
+          "avg": 8.375,
+          "unit": "%"
+        },
+        {
+          "name": "Max LTV - Land",
+          "low": 55.0,
+          "high": 70.0,
+          "avg": 62.5,
+          "unit": "%"
+        },
+        {
+          "name": "Max LTV - Construction",
+          "low": 60.0,
+          "high": 75.0,
+          "avg": 67.5,
+          "unit": "%"
+        },
+        {
+          "name": "Equity Requirement",
+          "low": 25.0,
+          "high": 35.0,
+          "avg": 30.0,
+          "unit": "%"
+        },
+        {
+          "name": "Origination Fee",
+          "low": 0.75,
+          "high": 2.0,
+          "avg": 1.375,
+          "unit": "points"
+        }
+      ]
+    }
+  ]
+}

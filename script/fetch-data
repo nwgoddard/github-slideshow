@@ -1,0 +1,18 @@
+#!/bin/sh
+# Fetch live survey data from realtyrates.com and regenerate the report.
+set -e
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+if ! python3 -c "import requests, bs4" 2>/dev/null; then
+  echo "Installing Python dependencies…"
+  pip3 install -r "$REPO_ROOT/scripts/requirements.txt"
+fi
+
+echo "==> Fetching survey data…"
+python3 "$REPO_ROOT/scripts/fetch_realtyrates.py"
+
+echo "==> Generating standalone report…"
+python3 "$REPO_ROOT/scripts/generate_report.py"
+
+echo "Done. Open report/index.html to view the report."

@@ -1,0 +1,68 @@
+{
+  "fetched_at": "2026-01-15T00:00:00Z",
+  "source": "RealtyRates.com Financial Indices",
+  "is_stub": true,
+  "indices": [
+    {
+      "name": "Federal Funds Rate",
+      "value": 4.375,
+      "unit": "%",
+      "category": "Central Bank",
+      "note": "Target range 4.25–4.50%"
+    },
+    {
+      "name": "10-Year Treasury",
+      "value": 4.32,
+      "unit": "%",
+      "category": "Treasury"
+    },
+    {
+      "name": "2-Year Treasury",
+      "value": 4.18,
+      "unit": "%",
+      "category": "Treasury"
+    },
+    {
+      "name": "30-Year Treasury",
+      "value": 4.55,
+      "unit": "%",
+      "category": "Treasury"
+    },
+    {
+      "name": "Prime Rate",
+      "value": 7.50,
+      "unit": "%",
+      "category": "Bank Lending"
+    },
+    {
+      "name": "SOFR (30-Day Avg)",
+      "value": 4.30,
+      "unit": "%",
+      "category": "Bank Lending"
+    },
+    {
+      "name": "Fannie Mae 30-Yr Fixed",
+      "value": 6.85,
+      "unit": "%",
+      "category": "Agency Mortgage"
+    },
+    {
+      "name": "Freddie Mac 30-Yr Fixed",
+      "value": 6.90,
+      "unit": "%",
+      "category": "Agency Mortgage"
+    },
+    {
+      "name": "FHA 30-Yr Fixed",
+      "value": 6.75,
+      "unit": "%",
+      "category": "Agency Mortgage"
+    },
+    {
+      "name": "Wall Street Journal Prime",
+      "value": 7.50,
+      "unit": "%",
+      "category": "Bank Lending"
+    }
+  ]
+}

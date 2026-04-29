@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subdivision Analysis — RealtyRates.com Survey Data</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --accent: #4f8ef7;
+      --accent2: #f76f4f;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --green: #4caf7d;
+      --yellow: #f5c842;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; }
+    a { color: var(--accent); }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 2rem; text-align: center; }
+    header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: .4rem; }
+    header .meta { color: var(--muted); font-size: .9rem; }
+    .stub-banner { background: #3a2a00; color: var(--yellow); padding: .75rem 1.5rem; text-align: center; font-size: .9rem; }
+    .stub-banner code { background: rgba(255,255,255,.1); padding: 0 .4rem; border-radius: 3px; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: .75rem 2rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    nav a { color: var(--muted); text-decoration: none; font-size: .9rem; }
+    nav a:hover { color: var(--text); }
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    section { margin-bottom: 3rem; }
+    h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: .3rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: .85rem; margin-bottom: 1.2rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; }
+    .stat-label { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .4rem; }
+    .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .stat-sub { color: var(--muted); font-size: .82rem; margin-top: .2rem; }
+    .chart-container { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; font-size: .88rem; }
+    thead th { background: #212435; color: var(--muted); font-weight: 600; text-align: left; padding: .7rem 1rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    tbody tr { border-top: 1px solid var(--border); }
+    tbody tr:hover { background: rgba(79,142,247,.05); }
+    td { padding: .65rem 1rem; vertical-align: middle; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    td.highlight { color: var(--accent); font-weight: 600; }
+    td.muted { color: var(--muted); font-size: .82rem; }
+    .badge { background: var(--border); color: var(--muted); font-size: .72rem; padding: .15rem .5rem; border-radius: 20px; margin-left: .4rem; }
+    .dev-category { margin-bottom: 2rem; }
+    .dev-category .desc { color: var(--muted); font-size: .85rem; margin-bottom: .8rem; }
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; color: var(--muted); font-size: .82rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Subdivision Analysis</h1>
+    <div class="meta">
+      Source: <a href="https://www.realtyrates.com" target="_blank">RealtyRates.com</a> Free Survey Data &nbsp;·&nbsp;
+      Survey Period: Q4 2025 &nbsp;·&nbsp;
+      Updated: January 15, 2026
+    </div>
+  </header>
+  <div class="stub-banner">⚠ Stub / sample data — run <code>scripts/fetch_realtyrates.py</code> to populate with live data</div>
+  <nav>
+    <a href="#summary">Summary</a>
+    <a href="#cap-rates">Cap Rates</a>
+    <a href="#developer-survey">Developer Survey</a>
+    <a href="#indices">Financial Indices</a>
+    
+  </nav>
+  <main>
+    <section id="summary">
+      <h2>Subdivision Market Summary</h2>
+      <p class="subtitle">Q4 2025 key metrics from RealtyRates.com survey data</p>
+      <div class="stats-grid">
+        
+      <div class="stat-card">
+        <div class="stat-label">Subdivision Land Loan Rate</div>
+        <div class="stat-value">7.50–9.50%</div>
+        <div class="stat-sub">Avg 8.50%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max LTV (Land)</div>
+        <div class="stat-value">50.00–65.00%</div>
+        <div class="stat-sub">Avg 57.50%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Absorption Rate</div>
+        <div class="stat-value">6.00–18.00 lots/mo</div>
+        <div class="stat-sub">Avg 12.0 lots/month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">10-Yr Treasury</div>
+        <div class="stat-value">4.32%</div>
+        <div class="stat-sub">Benchmark rate</div>
+      </div>
+      </div>
+    </section>
+
+    <section id="cap-rates">
+      <h2>Commercial Cap Rates &amp; Mortgage Rates by Property Type</h2>
+      <p class="subtitle">All rates in percent (%). LTV = maximum loan-to-value. Source: RealtyRates.com Commercial Mortgage Rate Survey.</p>
+      <div class="chart-container">
+        <canvas id="capRateChart" height="120"></canvas>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Property Type</th>
+            <th style="text-align:right">Cap Rate Range</th>
+            <th style="text-align:right">Cap Avg</th>
+            <th style="text-align:right">Interest Rate Range</th>
+            <th style="text-align:right">Rate Avg</th>
+            <th style="text-align:right">Max LTV</th>
+            <th style="text-align:right">Amort.</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Apartments - Garden/Low Rise</td>
+          <td class="num">4.75–5.75%</td>
+          <td class="num highlight">5.25%</td>
+          <td class="num">6.25–7.00%</td>
+          <td class="num highlight">6.62%</td>
+          <td class="num">70%</td>
+          <td class="num">30 yr</td>
+        </tr>
+        <tr>
+          <td>Apartments - Mid/High Rise</td>
+          <td class="num">4.50–5.50%</td>
+          <td class="num highlight">5.00%</td>
+          <td class="num">6.00–6.75%</td>
+          <td class="num highlight">6.38%</td>
+          <td class="num">70%</td>
+          <td class="num">30 yr</td>
+        </tr>
+        <tr>
+          <td>Office - CBD</td>
+          <td class="num">7.00–8.50%</td>
+          <td class="num highlight">7.75%</td>
+          <td class="num">7.25–8.00%</td>
+          <td class="num highlight">7.62%</td>
+          <td class="num">60%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Office - Suburban</td>
+          <td class="num">7.50–9.00%</td>
+          <td class="num highlight">8.25%</td>
+          <td class="num">7.50–8.25%</td>
+          <td class="num highlight">7.88%</td>
+          <td class="num">60%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Retail - Strip (Anchored)</td>
+          <td class="num">6.00–7.25%</td>
+          <td class="num highlight">6.62%</td>
+          <td class="num">7.00–7.75%</td>
+          <td class="num highlight">7.38%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Retail - Strip (Unanchored)</td>
+          <td class="num">6.75–8.00%</td>
+          <td class="num highlight">7.38%</td>
+          <td class="num">7.25–8.00%</td>
+          <td class="num highlight">7.62%</td>
+          <td class="num">60%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Retail - NNN Lease (National)</td>
+          <td class="num">5.25–6.25%</td>
+          <td class="num highlight">5.75%</td>
+          <td class="num">6.50–7.25%</td>
+          <td class="num highlight">6.88%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Industrial - Warehouse/Distribution</td>
+          <td class="num">5.25–6.50%</td>
+          <td class="num highlight">5.88%</td>
+          <td class="num">6.50–7.25%</td>
+          <td class="num highlight">6.88%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Industrial - R&D/Flex</td>
+          <td class="num">5.75–7.00%</td>
+          <td class="num highlight">6.38%</td>
+          <td class="num">6.75–7.50%</td>
+          <td class="num highlight">7.12%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Hotel - Full Service</td>
+          <td class="num">8.00–9.50%</td>
+          <td class="num highlight">8.75%</td>
+          <td class="num">7.50–8.50%</td>
+          <td class="num highlight">8.00%</td>
+          <td class="num">60%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Hotel - Limited Service</td>
+          <td class="num">8.50–10.00%</td>
+          <td class="num highlight">9.25%</td>
+          <td class="num">8.00–9.00%</td>
+          <td class="num highlight">8.50%</td>
+          <td class="num">60%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Self Storage</td>
+          <td class="num">5.50–6.75%</td>
+          <td class="num highlight">6.12%</td>
+          <td class="num">6.75–7.50%</td>
+          <td class="num highlight">7.12%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Medical Office</td>
+          <td class="num">6.00–7.25%</td>
+          <td class="num highlight">6.62%</td>
+          <td class="num">6.75–7.50%</td>
+          <td class="num highlight">7.12%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Senior Housing - Assisted Living</td>
+          <td class="num">7.00–8.50%</td>
+          <td class="num highlight">7.75%</td>
+          <td class="num">7.25–8.00%</td>
+          <td class="num highlight">7.62%</td>
+          <td class="num">60%</td>
+          <td class="num">25 yr</td>
+        </tr>
+        <tr>
+          <td>Mobile Home Parks</td>
+          <td class="num">5.50–6.75%</td>
+          <td class="num highlight">6.12%</td>
+          <td class="num">6.75–7.50%</td>
+          <td class="num highlight">7.12%</td>
+          <td class="num">65%</td>
+          <td class="num">25 yr</td>
+        </tr></tbody>
+      </table>
+    </section>
+
+    <section id="developer-survey">
+      <h2>Developer Survey — Subdivision &amp; Development Financing</h2>
+      <p class="subtitle">Financing terms for residential and commercial development projects. Source: RealtyRates.com Developer Survey.</p>
+      <div class="chart-container">
+        <canvas id="devChart" height="100"></canvas>
+      </div>
+      
+        <div class="dev-category">
+          <h3>Subdivisions & PUDs</h3>
+          <p class="desc">Residential land subdivisions and Planned Unit Developments</p>
+          <table>
+            <thead><tr><th>Metric</th><th>Range</th><th>Average</th></tr></thead>
+            <tbody>
+            <tr>
+              <td>Land Acquisition Loan Rate</td>
+              <td class="num">7.50–9.50%</td>
+              <td class="num highlight">8.50% avg</td>
+            </tr>
+            <tr>
+              <td>Construction/Development Loan Rate</td>
+              <td class="num">7.75–9.75%</td>
+              <td class="num highlight">8.75% avg</td>
+            </tr>
+            <tr>
+              <td>Max LTV - Land</td>
+              <td class="num">50.00–65.00%</td>
+              <td class="num highlight">57.50% avg</td>
+            </tr>
+            <tr>
+              <td>Max LTV - Construction</td>
+              <td class="num">60.00–75.00%</td>
+              <td class="num highlight">67.50% avg</td>
+            </tr>
+            <tr>
+              <td>Absorption Rate</td>
+              <td class="num">6.00–18.00 lots/month</td>
+              <td class="num highlight">12.00 lots/month avg</td>
+            </tr>
+            <tr>
+              <td>Equity Requirement</td>
+              <td class="num">25.00–40.00%</td>
+              <td class="num highlight">32.50% avg</td>
+            </tr>
+            <tr>
+              <td>Origination Fee</td>
+              <td class="num">1.00–2.50 points</td>
+              <td class="num highlight">1.75 points avg</td>
+            </tr></tbody>
+          </table>
+        </div>
+        <div class="dev-category">
+          <h3>Condominiums</h3>
+          <p class="desc">Condominium development projects</p>
+          <table>
+            <thead><tr><th>Metric</th><th>Range</th><th>Average</th></tr></thead>
+            <tbody>
+            <tr>
+              <td>Land Acquisition Loan Rate</td>
+              <td class="num">7.25–9.25%</td>
+              <td class="num highlight">8.25% avg</td>
+            </tr>
+            <tr>
+              <td>Construction Loan Rate</td>
+              <td class="num">7.50–9.50%</td>
+              <td class="num highlight">8.50% avg</td>
+            </tr>
+            <tr>
+              <td>Max LTV - Land</td>
+              <td class="num">55.00–70.00%</td>
+              <td class="num highlight">62.50% avg</td>
+            </tr>
+            <tr>
+              <td>Max LTV - Construction</td>
+              <td class="num">65.00–75.00%</td>
+              <td class="num highlight">70.00% avg</td>
+            </tr>
+            <tr>
+              <td>Pre-Sale Requirement</td>
+              <td class="num">20.00–40.00 % of units</td>
+              <td class="num highlight">30.00 % of units avg</td>
+            </tr>
+            <tr>
+              <td>Equity Requirement</td>
+              <td class="num">20.00–35.00%</td>
+              <td class="num highlight">27.50% avg</td>
+            </tr>
+            <tr>
+              <td>Origination Fee</td>
+              <td class="num">1.00–2.00 points</td>
+              <td class="num highlight">1.50 points avg</td>
+            </tr></tbody>
+          </table>
+        </div>
+        <div class="dev-category">
+          <h3>Business/Industrial Parks</h3>
+          <p class="desc">Commercial business and industrial park development</p>
+          <table>
+            <thead><tr><th>Metric</th><th>Range</th><th>Average</th></tr></thead>
+            <tbody>
+            <tr>
+              <td>Land Acquisition Loan Rate</td>
+              <td class="num">7.25–9.00%</td>
+              <td class="num highlight">8.12% avg</td>
+            </tr>
+            <tr>
+              <td>Construction Loan Rate</td>
+              <td class="num">7.50–9.25%</td>
+              <td class="num highlight">8.38% avg</td>
+            </tr>
+            <tr>
+              <td>Max LTV - Land</td>
+              <td class="num">55.00–70.00%</td>
+              <td class="num highlight">62.50% avg</td>
+            </tr>
+            <tr>
+              <td>Max LTV - Construction</td>
+              <td class="num">60.00–75.00%</td>
+              <td class="num highlight">67.50% avg</td>
+            </tr>
+            <tr>
+              <td>Equity Requirement</td>
+              <td class="num">25.00–35.00%</td>
+              <td class="num highlight">30.00% avg</td>
+            </tr>
+            <tr>
+              <td>Origination Fee</td>
+              <td class="num">0.75–2.00 points</td>
+              <td class="num highlight">1.38 points avg</td>
+            </tr></tbody>
+          </table>
+        </div>
+    </section>
+
+    <section id="indices">
+      <h2>Financial Indices &amp; Benchmark Rates</h2>
+      <p class="subtitle">Key market reference rates. Source: RealtyRates.com Financial Indices.</p>
+      <div class="chart-container">
+        <canvas id="idxChart" height="80"></canvas>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Index</th><th style="text-align:right">Current Rate</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Federal Funds Rate <span class="badge">Central Bank</span></td>
+          <td class="num highlight">4.38%</td>
+          <td class="muted">Target range 4.25–4.50%</td>
+        </tr>
+        <tr>
+          <td>10-Year Treasury <span class="badge">Treasury</span></td>
+          <td class="num highlight">4.32%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>2-Year Treasury <span class="badge">Treasury</span></td>
+          <td class="num highlight">4.18%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>30-Year Treasury <span class="badge">Treasury</span></td>
+          <td class="num highlight">4.55%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>Prime Rate <span class="badge">Bank Lending</span></td>
+          <td class="num highlight">7.50%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>SOFR (30-Day Avg) <span class="badge">Bank Lending</span></td>
+          <td class="num highlight">4.30%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>Fannie Mae 30-Yr Fixed <span class="badge">Agency Mortgage</span></td>
+          <td class="num highlight">6.85%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>Freddie Mac 30-Yr Fixed <span class="badge">Agency Mortgage</span></td>
+          <td class="num highlight">6.90%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>FHA 30-Yr Fixed <span class="badge">Agency Mortgage</span></td>
+          <td class="num highlight">6.75%</td>
+          <td class="muted"></td>
+        </tr>
+        <tr>
+          <td>Wall Street Journal Prime <span class="badge">Bank Lending</span></td>
+          <td class="num highlight">7.50%</td>
+          <td class="muted"></td>
+        </tr></tbody>
+      </table>
+    </section>
+
+    
+  </main>
+  <footer>
+    Data sourced from <a href="https://www.realtyrates.com" target="_blank">RealtyRates.com</a> free survey publications.
+    Updated January 15, 2026. For informational purposes only.
+  </footer>
+
+  <script>
+    const PALETTE_BLUE = 'rgba(79,142,247,0.85)';
+    const PALETTE_ORANGE = 'rgba(247,111,79,0.85)';
+    const PALETTE_GREEN = 'rgba(76,175,125,0.85)';
+    const GRID_COLOR = 'rgba(255,255,255,0.06)';
+    const TEXT_COLOR = '#8892a4';
+    Chart.defaults.color = TEXT_COLOR;
+    Chart.defaults.borderColor = GRID_COLOR;
+
+    const capLabels = ["Apartments - Garden/Low Rise", "Apartments - Mid/High Rise", "Office - CBD", "Office - Suburban", "Retail - Strip (Anchored)", "Retail - Strip (Unanchored)", "Retail - NNN Lease (National)", "Industrial - Warehouse/Distribution", "Industrial - R&D/Flex", "Hotel - Full Service", "Hotel - Limited Service", "Self Storage", "Medical Office", "Senior Housing - Assisted Living", "Mobile Home Parks"];
+    const capAvgs   = [5.25, 5.0, 7.75, 8.25, 6.625, 7.375, 5.75, 5.875, 6.375, 8.75, 9.25, 6.125, 6.625, 7.75, 6.125];
+    const rateAvgs  = [6.625, 6.375, 7.625, 7.875, 7.375, 7.625, 6.875, 6.875, 7.125, 8.0, 8.5, 7.125, 7.125, 7.625, 7.125];
+
+    new Chart(document.getElementById('capRateChart'), {
+      type: 'bar',
+      data: {
+        labels: capLabels,
+        datasets: [
+          { label: 'Avg Cap Rate (%)', data: capAvgs, backgroundColor: PALETTE_BLUE },
+          { label: 'Avg Interest Rate (%)', data: rateAvgs, backgroundColor: PALETTE_ORANGE },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          x: { ticks: { maxRotation: 45 } },
+          y: { title: { display: true, text: 'Rate (%)' }, min: 0 }
+        }
+      }
+    });
+
+    // Developer survey chart — land loan rates per category
+    const devCategories = ["Subdivisions & PUDs", "Condominiums", "Business/Industrial Parks"];
+    const devLandRates = [8.5, 8.25, 8.125];
+    const devConstRates = [8.75, 8.5, 8.375];
+
+    new Chart(document.getElementById('devChart'), {
+      type: 'bar',
+      data: {
+        labels: devCategories,
+        datasets: [
+          { label: 'Land Loan Rate Avg (%)', data: devLandRates, backgroundColor: PALETTE_BLUE },
+          { label: 'Construction Loan Rate Avg (%)', data: devConstRates, backgroundColor: PALETTE_GREEN },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { title: { display: true, text: 'Rate (%)' }, min: 0 } }
+      }
+    });
+
+    // Indices chart
+    const idxLabels = ["Federal Funds Rate", "10-Year Treasury", "2-Year Treasury", "30-Year Treasury", "Prime Rate", "SOFR (30-Day Avg)", "Fannie Mae 30-Yr Fixed", "Freddie Mac 30-Yr Fixed", "FHA 30-Yr Fixed", "Wall Street Journal Prime"];
+    const idxVals   = [4.375, 4.32, 4.18, 4.55, 7.5, 4.3, 6.85, 6.9, 6.75, 7.5];
+    new Chart(document.getElementById('idxChart'), {
+      type: 'bar',
+      indexAxis: 'y',
+      data: {
+        labels: idxLabels,
+        datasets: [{ label: 'Rate (%)', data: idxVals, backgroundColor: PALETTE_BLUE }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { title: { display: true, text: 'Rate (%)' }, min: 0 } }
+      }
+    });
+
+    
+  </script>
+</body>
+</html>
